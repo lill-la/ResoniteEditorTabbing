@@ -12,24 +12,25 @@ namespace EditorTabbing
 {
     public class EditorTabbing : ResoniteMod
     {
-        public static ModConfiguration Config;
+        public static ModConfiguration? Config;
 
         [AutoRegisterConfigKey]
         private static readonly ModConfigurationKey<bool> OverlayCompatibilityBackwardsMovement = new ModConfigurationKey<bool>("OverlayCompatibilityBackwardsMovement", "Moves forward with Enter when Steam Overlay could be enabled to not trigger it.", () => true);
 
         private static bool hasUnconfirmedImeInput = false;
         private static bool launchedInDesktop = false;
-        public override string Author => "Banane9";
-        public override string Link => "https://github.com/Banane9/NeosEditorTabbing";
+        internal const string VERSION_CONSTANT = "3.0.0";
+        public override string Author => "lill";
+        public override string Link => "https://github.com/lill-la/ResoniteEditorTabbing";
         public override string Name => "EditorTabbing";
-        public override string Version => "3.0.0";
+        public override string Version => VERSION_CONSTANT;
         private static bool SteamOverlayPossible => launchedInDesktop;
 
         public override void OnEngineInit()
         {
             Harmony harmony = new Harmony($"{Author}.{Name}");
             Config = GetConfiguration();
-            Config.Save(true);
+            Config?.Save(true);
             harmony.PatchAll();
 
             var outputDevice = Engine.Current.SystemInfo.HeadDevice;
@@ -89,7 +90,7 @@ namespace EditorTabbing
                     // i.e. when there is an update - running before EditingRoutine checks it
                     PostItem = (originalItem, transformedItem, returned) =>
                     {
-                        if (SteamOverlayPossible && Config.GetValue(OverlayCompatibilityBackwardsMovement) && !__instance.InputInterface.GetKey(Key.Shift)
+                        if (SteamOverlayPossible && Config!.GetValue(OverlayCompatibilityBackwardsMovement) && !__instance.InputInterface.GetKey(Key.Shift)
                             && (__instance.InputInterface.TypeDelta.Contains('\n') || __instance.InputInterface.TypeDelta.Contains('\r')))
                             __instance.RunInUpdates(1, () => changeFocus(__instance, false));
 
@@ -97,7 +98,7 @@ namespace EditorTabbing
                         {
                             __instance.Defocus();
                             changeFocus(__instance,
-                                __instance.InputInterface.GetKey(Key.Shift) || (SteamOverlayPossible && Config.GetValue(OverlayCompatibilityBackwardsMovement)));
+                                __instance.InputInterface.GetKey(Key.Shift) || (SteamOverlayPossible && Config!.GetValue(OverlayCompatibilityBackwardsMovement)));
                         }
                     }
                 }.GetEnumerator();
@@ -105,7 +106,7 @@ namespace EditorTabbing
 
             private static Slot getObjectRoot(Slot slot)
             {
-                var iObjRoot = slot.GetComponentInParents<IObjectRoot>(null, true, false);
+                var iObjRoot = slot.GetComponentInParents<IObjectRoot>(null!, true, false);
                 var objectRoot = slot.GetObjectRoot();
 
                 if (iObjRoot == null)
