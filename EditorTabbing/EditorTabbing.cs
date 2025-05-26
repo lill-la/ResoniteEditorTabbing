@@ -19,8 +19,8 @@ namespace EditorTabbing
 
         private static bool hasUnconfirmedImeInput = false;
         private static bool launchedInDesktop = false;
-        internal const string VERSION_CONSTANT = "3.0.0";
-        public override string Author => "lill";
+        internal const string VERSION_CONSTANT = "3.0.1";
+        public override string Author => "Banane9, hantabaru1014";
         public override string Link => "https://github.com/lill-la/ResoniteEditorTabbing";
         public override string Name => "EditorTabbing";
         public override string Version => VERSION_CONSTANT;
